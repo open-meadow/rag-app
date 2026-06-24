@@ -1,14 +1,16 @@
 import os
 import json
+import requests
 from pathlib import Path
 from ingest import load_pdf_pages, split_text, add_to_vector_db, load_vector_db
 
 DATA_PATH = Path("./data/unstructured/")
 VECTOR_DB_LIST = Path("./data/vector_db_list.json")
+OLLAMA_API_URL = "http://localhost:11434/api"
 
 def main(*args):
     while True:
-        user_input = int(input("Press 1 to ingest, 2 to query and 3 to exit: "))
+        user_input = int(input("Press 1 to ingest, 2 to query, 3 to get LLM response and 4 to exit: "))
         
         match user_input:
             case 1:
@@ -43,7 +45,24 @@ def main(*args):
                 print("RESULTS: ", results)
                 
                 break
+            
             case 3:
+                data = {
+                    "model": "qwen3.5:4b",
+                    "prompt": "Why is the sky blue?",
+                    "system": "",
+                    "stream": False
+                }
+                
+                with requests.post(f"{OLLAMA_API_URL}/generate", json=data) as res:
+                    response = res.json()
+                
+                print("LLM thinking: ", response["thinking"])
+                print("LLM response: ", response["response"])
+                
+                break
+                
+            case 4:
                 print("Exiting")
                 return
             case _:
