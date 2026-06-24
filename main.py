@@ -26,6 +26,8 @@ def main(*args):
                         loaded_pdf_pages = load_pdf_pages(f"{DATA_PATH}/{file}")
                         all_splits = split_text(loaded_pdf_pages)
                         add_to_vector_db(all_splits)
+
+                        print(f"Added file {file} to vector database")
                         
                 
                 with open(VECTOR_DB_LIST, "w") as f:
@@ -33,6 +35,13 @@ def main(*args):
                 
                 break
             case 2:
+                user_question: str = input("Input your question to retrieve answers from the vector database: ")
+
+                vector_store = load_vector_db()
+                results = vector_store.similarity_search_with_score(user_question)
+                
+                print("RESULTS: ", results)
+                
                 break
             case 3:
                 print("Exiting")
@@ -40,18 +49,6 @@ def main(*args):
             case _:
                 print("Incorrect input. Please try again")
 
-    # file_path = args[0][1]
-    # docs = load_pdf_pages(file_path)
-    # all_splits = split_text(docs)
-    # indexes = add_to_vector_db(all_splits)
-    
-    # print("indexes: ", indexes)
-    
-    # vector_store = load_vector_db()
-    # results = vector_store.similarity_search_with_score("How many days of annual leave per calendar year?")
-    # print("results: ", results)
-    
-    
 
 if __name__ == "__main__":
     main()
