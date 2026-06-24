@@ -1,11 +1,12 @@
 import os
+from pathlib import Path
 from pypdf import PdfReader
 from langchain_core.documents import Document
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_chroma import Chroma
 
-def load_pdf_pages(file_path: str) -> list[Document]:
+def load_pdf_pages(file_path: Path) -> list[Document]:
     reader = PdfReader(file_path)
     return [
         Document(
@@ -35,7 +36,7 @@ def load_vector_db():
     vector_store = Chroma(
         collection_name = "onboarding_documents_collection",
         embedding_function = embeddings,
-        persist_directory = "./chroma_langchain_db"
+        persist_directory = "./data/onboarding_documents_collection"
     )
     
     return vector_store

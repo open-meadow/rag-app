@@ -10,4 +10,3 @@ wheels/
 .venv
 
 # Persistent Vector Database
-chroma_langchain_db/
