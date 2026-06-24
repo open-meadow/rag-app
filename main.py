@@ -1,5 +1,5 @@
 import sys
-from ingest import load_pdf_pages
+from ingest import load_pdf_pages, split_text
 
 def main(*args):
     print("Hello from rag-app!")
@@ -9,7 +9,11 @@ def main(*args):
     file_path = args[0][1]
     docs = load_pdf_pages(file_path)
     
-    print("docs", docs)
+    # print("docs", docs)
+
+    all_splits = split_text(docs)
+    
+    print("all_splits: ", all_splits)
 
 if __name__ == "__main__":
     main(sys.argv)
