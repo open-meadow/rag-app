@@ -47,10 +47,25 @@ def main(*args):
                 break
             
             case 3:
+                user_question: str = input("Input your question to retrieve answers from the LLM: ")
+                
+                vector_store = load_vector_db()
+                results = vector_store.similarity_search(user_question)
+                
+                context = [result.page_content for result in results]
+                
                 data = {
                     "model": "qwen3.5:4b",
-                    "prompt": "Why is the sky blue?",
-                    "system": "",
+                    "prompt": user_question,
+                    "system": f"""
+                        You are an HR representative answering questions about your company's onboarding process from a new hire.
+                        You will be give a question from the new hire.
+                        Only answer from the provided context. Do not make up answers.
+                        
+                        ### CONTEXT
+                        {context}
+                        
+                    """,
                     "stream": False
                 }
                 
@@ -58,6 +73,7 @@ def main(*args):
                     response = res.json()
                 
                 print("LLM thinking: ", response["thinking"])
+                print("------------------------------------")
                 print("LLM response: ", response["response"])
                 
                 break
