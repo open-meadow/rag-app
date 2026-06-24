@@ -2,7 +2,7 @@ import os
 import json
 import requests
 from pathlib import Path
-from ingest import load_pdf_pages, split_text, add_to_vector_db, load_vector_db
+from ingest import ingest, load_vector_db
 
 DATA_PATH = Path("./data/unstructured/")
 VECTOR_DB_LIST = Path("./data/vector_db_list.json")
@@ -14,26 +14,28 @@ def main(*args):
         
         match user_input:
             case 1:
-                print(f"Will convert contents of {DATA_PATH} into embeddings and will add them to the vector database")
+                # print(f"Will convert contents of {DATA_PATH} into embeddings and will add them to the vector database")
 
-                # Using JSON file to check if a file already exists in vectordb
-                # If it exists, the program does not add that file to VectorDB
-                with open(VECTOR_DB_LIST, "r") as f:
-                    vector_db_json = json.load(f)
+                # # Using JSON file to check if a file already exists in vectordb
+                # # If it exists, the program does not add that file to VectorDB
+                # with open(VECTOR_DB_LIST, "r") as f:
+                #     vector_db_json = json.load(f)
                 
-                for file in os.listdir(DATA_PATH):
-                    if file.endswith(".pdf") and file not in vector_db_json["files_in_vector_db"]:
-                        vector_db_json["files_in_vector_db"].append(file)
+                # for file in os.listdir(DATA_PATH):
+                #     if file.endswith(".pdf") and file not in vector_db_json["files_in_vector_db"]:
+                #         vector_db_json["files_in_vector_db"].append(file)
                         
-                        loaded_pdf_pages = load_pdf_pages(f"{DATA_PATH}/{file}")
-                        all_splits = split_text(loaded_pdf_pages)
-                        add_to_vector_db(all_splits)
+                #         loaded_pdf_pages = load_pdf_pages(f"{DATA_PATH}/{file}")
+                #         all_splits = split_text(loaded_pdf_pages)
+                #         add_to_vector_db(all_splits)
 
-                        print(f"Added file {file} to vector database")
+                #         print(f"Added file {file} to vector database")
                         
                 
-                with open(VECTOR_DB_LIST, "w") as f:
-                    json.dump(vector_db_json, f)
+                # with open(VECTOR_DB_LIST, "w") as f:
+                #     json.dump(vector_db_json, f)
+                
+                ingest()
                 
                 break
             case 2:
