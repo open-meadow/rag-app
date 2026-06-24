@@ -9,6 +9,7 @@ def main(*args):
             case 1:
                 ingest()
                 break
+
             case 2:
                 query_vectordb()
                 break
@@ -20,6 +21,7 @@ def main(*args):
             case 4:
                 print("Exiting")
                 return
+
             case _:
                 print("Incorrect input. Please try again")
 
