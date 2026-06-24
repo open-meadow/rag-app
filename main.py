@@ -23,8 +23,9 @@ def main(*args):
                     if file.endswith(".pdf") and file not in vector_db_json["files_in_vector_db"]:
                         vector_db_json["files_in_vector_db"].append(file)
                         
-                        loaded_pdf_pages = load_pdf_pages(Path(file))
-                        print("loaded_pdf_pages")
+                        loaded_pdf_pages = load_pdf_pages(f"{DATA_PATH}/{file}")
+                        all_splits = split_text(loaded_pdf_pages)
+                        add_to_vector_db(all_splits)
                         
                 
                 with open(VECTOR_DB_LIST, "w") as f:

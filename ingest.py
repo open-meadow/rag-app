@@ -6,7 +6,9 @@ from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_chroma import Chroma
 
-def load_pdf_pages(file_path: Path) -> list[Document]:
+VECTOR_DB_PATH = "./data/onboarding_documents_collection"
+
+def load_pdf_pages(file_path: str) -> list[Document]:
     reader = PdfReader(file_path)
     return [
         Document(
@@ -36,12 +38,15 @@ def load_vector_db():
     vector_store = Chroma(
         collection_name = "onboarding_documents_collection",
         embedding_function = embeddings,
-        persist_directory = "./data/onboarding_documents_collection"
+        persist_directory = VECTOR_DB_PATH
     )
     
     return vector_store
 
 def add_to_vector_db(all_splits):
     vector_store = load_vector_db()
+
+    print("all_splits: ", all_splits)
+    
     indexes = vector_store.add_documents(documents=all_splits)
     return indexes 

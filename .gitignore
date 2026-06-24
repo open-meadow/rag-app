@@ -10,3 +10,4 @@ wheels/
 .venv
 
 # Persistent Vector Database
+data/onboarding_documents_collection/
