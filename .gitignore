@@ -22,9 +22,11 @@ pnpm-debug.log*
 lerna-debug.log*
 
 */node_modules
+*/node_modules/*
 */dist
 */dist-ssr
 *.local
+*/node_modules/undici-types/pool-stats.d.ts
 
 # Editor directories and files
 .vscode/*
