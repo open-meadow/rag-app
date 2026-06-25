@@ -1,9 +1,12 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, File, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
+from pathlib import Path
 from pydantic import BaseModel
 
 from ingest import ingest
 from query import query_llm
+
+UPLOAD_DIR = Path("./data/unstructured")
 
 app = FastAPI()
 
@@ -18,11 +21,22 @@ class Query(BaseModel):
     user_query: str
 
 @app.get("/ingest")
-def ingest_data():
+# async def ingest_data(file: UploadFile):
+async def ingest_data():
     print("The data in the \"ingest\" folder will now be ingested.")
+    
+    # content = await file.read()
+    # file_path = f"{UPLOAD_DIR}/{file.filename}"
+    
+    # with open(file_path, "wb") as f:
+    #     f.write(content)
+    
     ingest()
     return {
-        "message": "Data has been ingested"
+        "message": "Data has been ingested",
+        # "filename": file.filename,
+        # "content_type": file.content_type,
+        # "size": len(content)
     }
 
 

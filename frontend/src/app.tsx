@@ -1,15 +1,14 @@
-import { useState } from 'preact/hooks'
-// import preactLogo from './assets/preact.svg'
-// import viteLogo from './assets/vite.svg'
-// import heroImg from './assets/hero.png'
+import { useRef, useState } from 'preact/hooks'
 import './app.css'
 
-const TextInput = () => {
+const Interface = () => {
   const [loadingMessage, setLoadingMessage] = useState("No operation is being conducted");
   const [llmThoughts, setLLMThoughts] = useState("");
   const [llmResponse, setLLMResponse] = useState("");
   const [text, setText] = useState("");
+  const fileInputRef = useRef();
 
+  // When text is input and "Submit" button is clicked
   const handleChat = async (text: string) => {
     setLoadingMessage("Response is being retrieved from LLM");
     setText("");
@@ -21,13 +20,12 @@ const TextInput = () => {
     });
     const data = await res.json();
 
-    console.log("data: ", data);
-
     setLLMThoughts(data.LLM_thinking);
     setLLMResponse(data.LLM_response);
     setLoadingMessage("Response has been retrieved");
   };
 
+  // When "Re-ingest" button is clicked
   const handleIngest = async () => {
     setLoadingMessage("Adding new files for RAG");
 
@@ -73,7 +71,7 @@ export function App() {
   return (
     <>
       <h1>U-TO PeopleAssist</h1>
-      <TextInput />
+      <Interface />
     </>
   )
 }

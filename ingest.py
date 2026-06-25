@@ -33,23 +33,6 @@ def split_text(docs: list[Document]):
 
     return all_splits
 
-
-# def load_vector_db():
-#     # don't reload .... store in cache
-#     embeddings = HuggingFaceEmbeddings(
-#         model_name="sentence-transformers/all-MiniLM-L6-v2",
-#         encode_kwargs={"normalize_embeddings": True},
-#     )
-
-#     vector_store = Chroma(
-#         collection_name="onboarding_documents_collection",
-#         embedding_function=embeddings,
-#         persist_directory=VECTOR_DB_PATH
-#     )
-
-#     return vector_store
-
-
 def add_to_vector_db(all_splits):
     vector_store = VECTOR_STORE
 
