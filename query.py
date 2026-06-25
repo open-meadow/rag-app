@@ -12,8 +12,11 @@ def query_vectordb():
                 
     print("RESULTS: ", results)
 
-def query_llm():
-    user_question: str = input("Input your question to retrieve answers from the LLM: ")
+def query_llm(uq: str =  ""):
+    if not uq:
+        user_question: str = input("Input your question to retrieve answers from the LLM: ")
+    else:
+        user_question = uq
                 
     vector_store = load_vector_db()
     results = vector_store.similarity_search(user_question)
@@ -41,3 +44,8 @@ def query_llm():
     print("LLM thinking: ", response["thinking"])
     print("------------------------------------")
     print("LLM response: ", response["response"])
+
+    return {
+        "LLM_thinking": response["thinking"],
+        "LLM_response": response["response"]
+    }
