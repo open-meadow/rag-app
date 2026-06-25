@@ -33,6 +33,7 @@ def split_text(docs: list[Document]):
     return all_splits
 
 def load_vector_db():
+    # don't reload .... store in cache
     embeddings = HuggingFaceEmbeddings(
         model_name = "sentence-transformers/all-MiniLM-L6-v2",
         encode_kwargs = { "normalize_embeddings": True },

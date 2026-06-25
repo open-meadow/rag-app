@@ -27,4 +27,12 @@ def main(*args):
 
 
 if __name__ == "__main__":
+    # create FastAPI endpoints
+    # learn FastAPI
+        # why Pydantic?
+        # how to build endpoints?
+        # how validation?
+    # know about Knowledge Graph
+    # Types of Prompts
+    # 
     main()
