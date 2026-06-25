@@ -1,13 +1,13 @@
 import json
 import requests
-from ingest import load_vector_db
 
+from vector_db import VECTOR_STORE
 OLLAMA_API_URL = "http://localhost:11434/api"
 
 def query_vectordb():
     user_question: str = input("Input your question to retrieve answers from the vector database: ")
     
-    vector_store = load_vector_db()
+    vector_store = VECTOR_STORE
     results = vector_store.similarity_search_with_score(user_question)
                 
     print("RESULTS: ", results)
@@ -18,7 +18,7 @@ def query_llm(uq: str =  ""):
     else:
         user_question = uq
                 
-    vector_store = load_vector_db()
+    vector_store = VECTOR_STORE
     results = vector_store.similarity_search(user_question)
                 
     context = [result.page_content for result in results]
