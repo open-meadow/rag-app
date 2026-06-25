@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
 from ingest import ingest
 
 app = FastAPI()
@@ -11,6 +12,9 @@ app.add_middleware(
     allow_headers = ["*"]
 )
 
+class Query(BaseModel):
+    user_query: str
+
 @app.get("/ingest")
 def ingest_data():
     print("The data in the \"ingest\" folder will now be ingested.")
@@ -20,8 +24,8 @@ def ingest_data():
     }
 
 @app.post("/query")
-async def user_query():
-    print("Backend received request")
+async def user_query(query: Query):
+    print("Backend received request: ", query)
     return { "message": "2" }
 
 @app.get("/")

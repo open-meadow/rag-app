@@ -4,23 +4,35 @@ import { useState } from 'preact/hooks'
 // import heroImg from './assets/hero.png'
 import './app.css'
 
-const handleChat = async (input) => {
-  const res = await fetch("http://127.0.0.1:8000/" , { "method": "GET" });
+const handleChat = async (text: string) => {
+  const res = await fetch("http://127.0.0.1:8000/query" , { 
+    method: "POST", 
+    headers: { "content-type": "application/json" }, 
+    body: JSON.stringify({ user_query: text }) });
   const data = await res.json();
   
   console.log("data: ", data)
-}
+};
+
+const handleIngest = async (setIngestMessage) => {
+  const res = await fetch("http://127.0.0.1:8000/ingest" , { "method": "GET" })
+  const data = await res.json();
+
+  console.log("data: ", data);
+  console.log("data.message: ", data.message);
+  setIngestMessage(data.message);
+};
 
 const TextInput = () => {
+    const [ingestMessage, setIngestMessage] = useState("");
     const [text, setText] = useState("");
 
     return (
       <div>
-        <label>
-          Name: 
-          <input onInput={e => setText(e.currentTarget.value)}></input>
-          <button onClick={handleChat}>Send</button>
-        </label>
+        <input onInput={e => setText(e.currentTarget.value)}></input>
+        <button onClick={() => handleChat(text)}>Send</button>
+        <button onClick={() => handleIngest(setIngestMessage)}>Re-Ingest</button>
+        <p>{ingestMessage}</p>
       </div>
     )
 }
