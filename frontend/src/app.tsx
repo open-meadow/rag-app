@@ -1,5 +1,6 @@
 import { useRef, useState } from 'preact/hooks'
 import './app.css'
+import type { JSX } from 'preact/jsx-runtime';
 
 const Interface = () => {
   const [loadingMessage, setLoadingMessage] = useState("No operation is being conducted");
@@ -25,19 +26,19 @@ const Interface = () => {
     setLoadingMessage("Response has been retrieved");
   };
 
-  // When "Re-ingest" button is clicked
-  const handleIngest = async () => {
-    setLoadingMessage("Adding new files for RAG");
+  // // When "Re-ingest" button is clicked
+  // const handleIngest = async () => {
+  //   setLoadingMessage("Adding new files for RAG");
 
-    const res = await fetch("http://127.0.0.1:8000/ingest", { "method": "GET" })
-    const data = await res.json();
+  //   const res = await fetch("http://127.0.0.1:8000/ingest", { "method": "GET" })
+  //   const data = await res.json();
 
-    console.log("data: ", data);
-    console.log("data.message: ", data.message);
-    setLoadingMessage("Ingestion complete");
-  };
+  //   console.log("data: ", data);
+  //   console.log("data.message: ", data.message);
+  //   setLoadingMessage("Ingestion complete");
+  // };
 
-  const handleFileUpload = async (event) => {
+  const handleFileUpload = async (event: JSX.TargetedEvent<HTMLInputElement>) => {
     const files = event.target.files;
     if(!files) return;
 
@@ -54,11 +55,10 @@ const Interface = () => {
     })
   }
 
-  const handleButtonClick = (event) => {
+  const handleButtonClick = (event: JSX.TargetedMouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
     if (!fileInputRef || !fileInputRef.current) return;
-    
-    fileInputRef.current.click();
+    fileInputRef.current?.click();
   }
 
   return (
