@@ -20,23 +20,24 @@ app.add_middleware(
 class Query(BaseModel):
     user_query: str
 
-@app.get("/ingest")
-# async def ingest_data(file: UploadFile):
-async def ingest_data():
+@app.post("/ingest")
+async def ingest_data(file: UploadFile = File(None)):
+# async def ingest_data():
     print("The data in the \"ingest\" folder will now be ingested.")
+    print("This is the file: ", file)
     
-    # content = await file.read()
-    # file_path = f"{UPLOAD_DIR}/{file.filename}"
+    content = await file.read()
+    file_path = f"{UPLOAD_DIR}/{file.filename}"
     
-    # with open(file_path, "wb") as f:
-    #     f.write(content)
+    with open(file_path, "wb") as f:
+        f.write(content)
     
     ingest()
     return {
         "message": "Data has been ingested",
-        # "filename": file.filename,
-        # "content_type": file.content_type,
-        # "size": len(content)
+        "filename": file.filename,
+        "content_type": file.content_type,
+        "size": len(content)
     }
 
 
@@ -52,3 +53,6 @@ async def root():
     return {
         "message": "Hello World"
     }
+
+# Use vLLM from HuggingFace
+# 

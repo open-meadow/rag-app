@@ -6,7 +6,7 @@ const Interface = () => {
   const [llmThoughts, setLLMThoughts] = useState("");
   const [llmResponse, setLLMResponse] = useState("");
   const [text, setText] = useState("");
-  const fileInputRef = useRef();
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   // When text is input and "Submit" button is clicked
   const handleChat = async (text: string) => {
@@ -37,6 +37,30 @@ const Interface = () => {
     setLoadingMessage("Ingestion complete");
   };
 
+  const handleFileUpload = async (event) => {
+    const files = event.target.files;
+    if(!files) return;
+
+    const file = files[0];
+
+    console.log("filename: ", file.name);
+  
+    const formData = new FormData();
+    formData.append("file", file);
+
+    await fetch("http://127.0.0.1:8000/ingest", { 
+      method: "POST", 
+      body: formData
+    })
+  }
+
+  const handleButtonClick = (event) => {
+    event.preventDefault();
+    if (!fileInputRef || !fileInputRef.current) return;
+    
+    fileInputRef.current.click();
+  }
+
   return (
     <div>
       {/* Loading Message */}
@@ -47,7 +71,9 @@ const Interface = () => {
         <input id="inputBox" onInput={e => setText(e.currentTarget.value)}></input>
         <div id="buttons">
           <button onClick={() => handleChat(text)}>Send</button>
-          <button onClick={() => handleIngest()}>Re-Ingest</button>
+          {/* <button onClick={() => handleIngest()}>Re-Ingest</button> */}
+          <button onClick={handleButtonClick}>Ingest</button>
+          <input ref={fileInputRef} type='file' hidden onChange={handleFileUpload}></input>
         </div>
       </div>
 
