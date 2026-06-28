@@ -2,6 +2,8 @@ import { useRef, useState } from 'preact/hooks'
 import './app.css'
 import type { JSX } from 'preact/jsx-runtime';
 
+const BACKEND_URL = "http://127.0.0.1:8001"
+
 const Interface = () => {
   const [loadingMessage, setLoadingMessage] = useState("No operation is being conducted");
   const [llmThoughts, setLLMThoughts] = useState("");
@@ -14,12 +16,14 @@ const Interface = () => {
     setLoadingMessage("Response is being retrieved from LLM");
     setText("");
 
-    const res = await fetch("http://127.0.0.1:8000/query", {
+    const res = await fetch(`${BACKEND_URL}/query`, {
       method: "POST",
       headers: { "content-type": "application/json" },
       body: JSON.stringify({ user_query: text })
     });
     const data = await res.json();
+
+    console.log("data: ", data)
 
     setLLMThoughts(data.LLM_thinking);
     setLLMResponse(data.LLM_response);
@@ -49,7 +53,7 @@ const Interface = () => {
     const formData = new FormData();
     formData.append("file", file);
 
-    await fetch("http://127.0.0.1:8000/ingest", { 
+    await fetch(`${BACKEND_URL}/ingest`, { 
       method: "POST", 
       body: formData
     })
