@@ -15,7 +15,7 @@ const Interface = () => {
   const handleChat = async (text: string) => {
     setLoadingMessage("Response is being retrieved from LLM");
     setText("");
-
+    
     const res = await fetch(`${BACKEND_URL}/query`, {
       method: "POST",
       headers: { "content-type": "application/json" },
@@ -23,33 +23,17 @@ const Interface = () => {
     });
     const data = await res.json();
 
-    console.log("data: ", data)
 
     setLLMThoughts(data.LLM_thinking);
     setLLMResponse(data.LLM_response);
     setLoadingMessage("Response has been retrieved");
   };
 
-  // // When "Re-ingest" button is clicked
-  // const handleIngest = async () => {
-  //   setLoadingMessage("Adding new files for RAG");
-
-  //   const res = await fetch("http://127.0.0.1:8000/ingest", { "method": "GET" })
-  //   const data = await res.json();
-
-  //   console.log("data: ", data);
-  //   console.log("data.message: ", data.message);
-  //   setLoadingMessage("Ingestion complete");
-  // };
-
   const handleFileUpload = async (event: JSX.TargetedEvent<HTMLInputElement>) => {
     const files = event.target.files;
     if(!files) return;
 
     const file = files[0];
-
-    console.log("filename: ", file.name);
-  
     const formData = new FormData();
     formData.append("file", file);
 
@@ -61,7 +45,6 @@ const Interface = () => {
 
   const handleButtonClick = (event: JSX.TargetedMouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
-    if (!fileInputRef || !fileInputRef.current) return;
     fileInputRef.current?.click();
   }
 
@@ -72,7 +55,7 @@ const Interface = () => {
 
       {/* Input and buttons */}
       <div>
-        <input id="inputBox" onInput={e => setText(e.currentTarget.value)}></input>
+        <input id="inputBox" value={text} onInput={e => setText(e.currentTarget.value)}></input>
         <div id="buttons">
           <button onClick={() => handleChat(text)}>Send</button>
           {/* <button onClick={() => handleIngest()}>Re-Ingest</button> */}

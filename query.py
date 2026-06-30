@@ -79,7 +79,7 @@ def query_llm(uq: str =  ""):
         # combined res is in the form <think>Thinking string</think> Response
         # Need to separate thinking and response
         llm_output = response["choices"][0]["message"]["content"]
-
+        
         llm_thinking = ""
         
         match = re.search(r"<think>(.*?)</think>(.*)", llm_output, re.DOTALL)
