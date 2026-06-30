@@ -2,7 +2,9 @@ import { useRef, useState } from 'preact/hooks'
 import './app.css'
 import type { JSX } from 'preact/jsx-runtime';
 
-const BACKEND_URL = "http://127.0.0.1:8001"
+const BACKEND_URL = "http://127.0.0.1:8001";
+const USERNAME = "johndoe";
+const PASSWORD = "secret";
 
 const Interface = () => {
   const [loadingMessage, setLoadingMessage] = useState("No operation is being conducted");
@@ -11,14 +13,33 @@ const Interface = () => {
   const [text, setText] = useState("");
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  const getLoginToken = async () => {
+    const form = new FormData();
+    form.append("username", USERNAME);
+    form.append("password", PASSWORD);
+
+    const res = await fetch(`${BACKEND_URL}/token`, {
+      method: "POST",
+      body: form
+    });
+
+    return res.json();
+  }
+
   // When text is input and "Submit" button is clicked
   const handleChat = async (text: string) => {
     setLoadingMessage("Response is being retrieved from LLM");
     setText("");
     
+    const loginToken = await getLoginToken();
+    console.log("LoginToken: ", loginToken);
+
     const res = await fetch(`${BACKEND_URL}/query`, {
       method: "POST",
-      headers: { "content-type": "application/json" },
+      headers: { 
+        "Authorization": `Bearer ${loginToken.access_token}`,
+        "content-type": "application/json" 
+      },
       body: JSON.stringify({ user_query: text })
     });
     const data = await res.json();
@@ -32,13 +53,18 @@ const Interface = () => {
   const handleFileUpload = async (event: JSX.TargetedEvent<HTMLInputElement>) => {
     const files = event.target.files;
     if(!files) return;
-
+    
+    const loginToken = await getLoginToken();
+    
     const file = files[0];
     const formData = new FormData();
     formData.append("file", file);
 
     await fetch(`${BACKEND_URL}/ingest`, { 
       method: "POST", 
+      headers: {
+        "Authorization": `Bearer ${loginToken.access_token}`,
+      },
       body: formData
     })
   }

@@ -7,6 +7,7 @@ from pydantic import BaseModel
 
 from ingest import ingest
 from query import query_llm
+from auth import login_for_access_token, get_current_active_user, User
 
 UPLOAD_DIR = Path("./data/unstructured")
 
@@ -21,9 +22,11 @@ app.add_middleware(
 class Query(BaseModel):
     user_query: str
 
+@app.post("/token")(login_for_access_token)
+
 # Adds file to /data/unstructured, and re-ingests the data in that file
 @app.post("/ingest")
-async def ingest_data(file: UploadFile = File(None)):
+async def ingest_data(current_user: Annotated[User, Depends(get_current_active_user)], file: UploadFile = File(None)):
     content = await file.read()
     file_path = f"{UPLOAD_DIR}/{file.filename}"
     
@@ -40,7 +43,7 @@ async def ingest_data(file: UploadFile = File(None)):
 
 # Sends query to LLM
 @app.post("/query")
-async def user_query(query: Query):
+async def user_query(current_user: Annotated[User, Depends(get_current_active_user)], query: Query):
     llm_answers = query_llm(query.user_query)
     return llm_answers
 
