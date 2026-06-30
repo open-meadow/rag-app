@@ -3,28 +3,32 @@ import './app.css'
 import type { JSX } from 'preact/jsx-runtime';
 
 const BACKEND_URL = "http://127.0.0.1:8001";
-const USERNAME = "johndoe";
-const PASSWORD = "secret";
 
+// Shows login screen if not logged in
 const LoginScreen = ({ handleLogin }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [wrongPassword, setWrongPassword] = useState(false);
 
-  const getLoginToken = async (e: { preventDefault: () => void; }) => {
-    e.preventDefault();
+  const getLoginToken = async (event) => {
+    event.preventDefault();
+    setWrongPassword(false);
 
     const form = new FormData();
-    form.append("username", USERNAME);
-    form.append("password", PASSWORD);
+    form.append("username", username);
+    form.append("password", password);
   
     const res = await fetch(`${BACKEND_URL}/token`, {
       method: "POST",
       body: form
     });
   
-    const token = await res.json();
-
-    handleLogin(token);
+    if(res.ok) {
+      const token = await res.json();
+      handleLogin(token);
+    } else {
+      setWrongPassword(true);
+    }
   }
 
   return(
@@ -33,10 +37,13 @@ const LoginScreen = ({ handleLogin }) => {
       <form onSubmit={getLoginToken}>
         <label for="usernameInput">Username</label>
         <input id="usernameInput" type='text' value={username} onInput={e => setUsername(e.currentTarget.value)}/>
+        <br/>
         <label for="passwordInput">Password</label>
         <input id="passwordInput" type='password' value={password} onInput={e => setPassword(e.currentTarget.value)}/>
+        <br/>
         <button type='submit'>Login</button>
       </form>
+      {wrongPassword && <p>Wrong Password</p>}
     </>
   );
 }
@@ -53,9 +60,6 @@ const Interface = ({loginToken}) => {
   const handleChat = async (text: string) => {
     setLoadingMessage("Response is being retrieved from LLM");
     setText("");
-    
-    // const loginToken = await getLoginToken();
-    // console.log("LoginToken: ", loginToken);
 
     const res = await fetch(`${BACKEND_URL}/query`, {
       method: "POST",
@@ -76,8 +80,6 @@ const Interface = ({loginToken}) => {
   const handleFileUpload = async (event: JSX.TargetedEvent<HTMLInputElement>) => {
     const files = event.target.files;
     if(!files) return;
-    
-    // const loginToken = await getLoginToken();
     
     const file = files[0];
     const formData = new FormData();
@@ -123,7 +125,6 @@ const Interface = ({loginToken}) => {
         <h3>LLM Thoughts will appear here</h3>
         <p>{llmThoughts}</p>
       </div>
-
     </div>
   )
 }
